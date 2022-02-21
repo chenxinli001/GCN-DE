@@ -1,0 +1,231 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Aug 11 19:55:41 2020
+
+@author: Sunly
+"""
+
+import h5py
+
+import torch
+import torch.utils.data as data
+import torch.nn as nn
+
+from Sampler import *
+
+from Segmentor import SegMenTor
+from Network import *
+
+import torch.optim as optim
+import numpy as np
+from nn_common_modules import losses as additional_losses
+import os
+
+from evaluator import *
+
+os.system('nvidia-smi -q -d Memory |grep -A4 GPU|grep Free >tmp')
+memory_gpu=[int(x.split()[2]) for x in open('tmp','r').readlines()]
+max_free = np.argmax(memory_gpu)
+
+print("choose gpu %d free %d MiB"%(max_free, memory_gpu[max_free]))
+os.environ['CUDA_VISIBLE_DEVICES']=str(max_free)
+
+#os.environ['CUDA_VISIBLE_DEVICES'] = "0" 
+
+
+train_image_path = './datasets/Train-Image.h5'
+train_label_path = './datasets/Train-Label.h5'
+
+val_image_path = './datasets/Val-Image.h5'
+val_label_path = './datasets/Val-Label.h5'
+
+train_bs = 8
+val_bs = 8
+num_epoch = 20
+
+reload_mdoel = 0
+print_freq = 50
+
+# model_path = './result/sup_combineloss/'
+model_path = './result_pretrain/sup_combineloss/'
+
+txt_path = model_path + 'result.txt'
+if not os.path.exists(model_path):
+    os.makedirs(model_path)
+
+support_file = './datasets/FSS-Eval-36.h5'
+query_path = ['./datasets/FSS-Eval-37.h5','./datasets/FSS-Eval-38.h5','./datasets/FSS-Eval-39.h5']
+root_save_path = model_path + 'nii_save/'
+if not os.path.exists(root_save_path):
+    os.makedirs(root_save_path)
+
+print(model_path)
+f = open(txt_path, "a+")
+f.write('train_bs:{}, val_bs:{}, num_epoch:{} \n'.format(train_bs, val_bs,num_epoch))
+f.close()
+
+
+train_dataset = get_class_dataset(train_image_path,train_label_path,1,True)
+val_dataset = get_class_dataset(val_image_path,val_label_path,1,True)
+
+train_loader = torch.utils.data.DataLoader(dataset=train_dataset,batch_size=train_bs,shuffle=True)
+val_loader = torch.utils.data.DataLoader(dataset=val_dataset,batch_size=val_bs,shuffle=False)
+print('train loader len:{}, val loader len:{}'.format(len(train_loader),len(val_loader)))
+
+#net = SDnetSegmentor().cuda()
+net = baseline().cuda()
+
+optimizer = optim.SGD(net.parameters(), lr=1e-2,momentum=0.99, weight_decay=1e-4)
+#optimizer = optim.Adam(net.parameters(), lr=1e-3, weight_decay=1e-4)
+
+criterion1 = DiceLoss2D() 
+criterion2 = nn.BCELoss()
+
+
+best_val_dc = 0
+best_e = 0
+
+
+if reload_mdoel:
+    checkpoint = torch.load(model_path + 'latest.pth')
+    #checkpoint = torch.load(load_model_path + 'epoch-15.pth')
+    net.load_state_dict(checkpoint['state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer'])
+    start_epoch = checkpoint['epoch'] + 1
+    best_DC = checkpoint['best_DC']
+    print('Reload epoch {} model OK!, best DC is {}'.format(start_epoch, best_DC))
+else:
+    start_epoch = 0
+
+for e in range(start_epoch,num_epoch+1):
+    net.train()
+    for i_batch, sampled_batch in enumerate(train_loader):
+        #image = sampled_batch[0].unsqueeze_(dim=1).type(torch.FloatTensor).cuda()
+        #label = sampled_batch[1].type(torch.LongTensor).cuda()/4
+        # print(np.unique(sampled_batch[0]))
+        # print(np.unique(sampled_batch[1]))
+        image = sampled_batch[0].unsqueeze_(dim=1).type(torch.FloatTensor).cuda()
+        label = sampled_batch[1].type(torch.FloatTensor).cuda()
+
+        seg = net(image)
+        
+        #loss = criterion2(seg, label)
+        loss = criterion1(seg, label) + criterion2(seg,label)
+
+        optimizer.zero_grad()
+        loss.backward() 
+        optimizer.step()
+        
+        if i_batch % print_freq==0:
+            print('Epoch {:d} | Episode {:d}/{:d} | Loss {:f}'.format(e, i_batch, len(train_loader), loss))
+    
+    with torch.no_grad():
+        # net.eval()
+        # dice_list = []
+        # for i_batch, sampled_batch in enumerate(val_loader):
+        #     image = sampled_batch[0].unsqueeze_(dim=1).cuda()
+        #     label = sampled_batch[1].unsqueeze_(dim=1).cuda()
+        #     seg = net(image)
+        #     dice = dice_score_binary(seg,label)*100
+        #     dice_list.append(dice)
+        # val_dc = sum(dice_list)/len(dice_list)
+        # print('Epoch {:d} Val dice: {:.1f}'.format(e,val_dc))
+        # f = open(txt_path, "a+")
+        # f.write('Epoch {:d} Val dice: {:.1f} \n'.format(e,val_dc))
+        # f.close()
+        save_path = root_save_path +'epoch-{}/'.format(e) 
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        dice_list = evaluate_seg(net,support_file,query_path,save_path,query_label=1,Num_support=6)
+        val_dc = sum(dice_list)/len(dice_list)
+        print('Epoch {:d}, Val dice: {:.1f}|{:.1f}|{:.1f}, avg is {:.1f}'.format(e,dice_list[0],dice_list[1],dice_list[2],val_dc))
+        f = open(txt_path, "a+")
+        f.write('Epoch {:d}, Val dice: {:.1f}|{:.1f}|{:.1f}, avg is {:.1f} \n'.format(e,dice_list[0],dice_list[1],dice_list[2],val_dc))
+        f.close()
+        if val_dc>best_val_dc:
+            best_val_dc = val_dc
+            best_e = e
+        PATH = model_path + 'epoch-{}.pth'.format(e)
+        torch.save({'state_dict': net.state_dict(),
+                    'optimizer': optimizer.state_dict(),
+                    'epoch': e,
+                    'best_DC': best_val_dc}, PATH)
+        # if val_dc>best_val_dc:
+        #     best_val_dc = val_dc
+        #     best_e = e
+        #     PATH = model_path + 'best.pth'
+        #     torch.save({'state_dict': net.state_dict(),
+        #                 'optimizer': optimizer.state_dict(),
+        #                 'epoch': best_e,
+        #                 'best_DC': best_val_dc}, PATH)
+        # if e%5==0:
+        #     PATH = model_path + 'epoch-{}.pth'.format(e)
+        #     torch.save({'state_dict': net.state_dict(),
+        #                 'optimizer': optimizer.state_dict(),
+        #                 'epoch': e,
+        #                 'best_DC': best_val_dc}, PATH)
+        # PATH = model_path + 'latest.pth'
+        # torch.save({'state_dict': net.state_dict(),
+        #             'optimizer': optimizer.state_dict(),
+        #             'epoch': e,
+        #             'best_DC': best_val_dc}, PATH)
+print('Best Epoch {:d} Avg Val dice: {:.1f}'.format(best_e,best_val_dc))
+f = open(txt_path, "a+")
+f.write('Best Epoch {:d} Avg Val dice: {:.1f} \n'.format(best_e,best_val_dc))
+f.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
