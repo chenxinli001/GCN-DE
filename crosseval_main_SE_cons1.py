@@ -9,14 +9,14 @@ import h5py
 import torch
 import torch.utils.data as data
 import torch.nn as nn
-from Sampler import *
-from Segmentor import SegMenTor
-from Network import *
+from Networks.Sampler import *
+from Networks.Segmentor import SegMenTor
+from Networks.Network import *
 import torch.optim as optim
 import argparse
-from Network_correct import *
+from Networks.Network_correct import *
 import os
-from evaluator import *
+from loss.evaluator import *
 
 def get_args():
     parser = argparse.ArgumentParser(description="Script to launch jigsaw training", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
