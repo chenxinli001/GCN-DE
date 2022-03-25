@@ -11,10 +11,10 @@ import torch
 import torch.utils.data as data
 import torch.nn as nn
 
-from Sampler import *
+from Networks.Sampler import *
 
-from Segmentor import SegMenTor
-from Network import *
+from Networks.Segmentor import SegMenTor
+from Networks.Network import *
 
 import torch.optim as optim
 import argparse
@@ -22,7 +22,7 @@ import argparse
 #from nn_common_modules import losses as additional_losses
 
 import os
-from evaluator import *
+from loss.evaluator import *
 import cv2
 from tqdm import tqdm
 import math
