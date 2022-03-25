@@ -11,9 +11,9 @@ import torch
 import torch.utils.data as data
 import torch.nn as nn
 
-from Sampler import OneShotBatchSampler
+from Networks.Sampler import OneShotBatchSampler
 
-from Segmentor import SegMenTor
+from Networks.Segmentor import SegMenTor
 
 import torch.optim as optim
 
