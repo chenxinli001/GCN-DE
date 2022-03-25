@@ -11,11 +11,11 @@ import torch
 import torch.utils.data as data
 import torch.nn as nn
 
-from Sampler import *
+from Networks.Sampler import *
 
-# from Segmentor import SegMenTor
-# from Network import *
-# from Network_correct import *
+# from Networks.Segmentor import SegMenTor
+# from Networks.Network import *
+# from Networks.Network_correct import *
 
 import torch.optim as optim
 import argparse
@@ -23,7 +23,7 @@ import argparse
 #from nn_common_modules import losses as additional_losses
 
 import os
-# from evaluator import *
+# from loss.evaluator import *
 
 
 net_params = {'num_class':1,'num_channels': 1,'num_filters': 64,'kernel_h': 5,'kernel_w': 5,'kernel_c': 1,'stride_conv': 1,'pool': 2,'stride_pool': 2,'se_block': "NONE" #Valid options : NONE, CSE, SSE, CSSE
