@@ -11,11 +11,11 @@ import torch
 import torch.utils.data as data
 import torch.nn as nn
 
-import Sampler
-from Sampler import *
+import Networks.Sampler
+from Networks.Sampler import *
 
-from Segmentor import SegMenTor
-from Network import *
+from Networks.Segmentor import SegMenTor
+from Networks.Network import *
 
 import torch.optim as optim
 import argparse
@@ -24,7 +24,7 @@ import cv2
 #from nn_common_modules import losses as additional_losses
 
 import os
-from evaluator import *
+from loss.evaluator import *
 
 # def set_seed(seed):
 #     torch.manual_seed(seed)
