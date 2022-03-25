@@ -11,8 +11,8 @@ from torch.nn import ReLU, Sigmoid
 import torch
 import torch.nn.functional as F
 
-from UNET3D_Query import UNet3DQ
-from UNET3D_Support import UNet3DS
+from Networks.UNET3D_Query import UNet3DQ
+from Networks.UNET3D_Support import UNet3DS
 
 class SegMenTor(Module):
 
