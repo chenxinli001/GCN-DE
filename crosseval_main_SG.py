@@ -11,11 +11,11 @@ import torch
 import torch.utils.data as data
 import torch.nn as nn
  
-import Sampler
-from Sampler import *
+#import Sampler
+from Networks.Sampler import *
 
-#from Segmentor import SegMenTor
-from Network import *
+#from Networks.Segmentor import SegMenTor
+from Networks.Network import *
 
 import torch.optim as optim
 import argparse
