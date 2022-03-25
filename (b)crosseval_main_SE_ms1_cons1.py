@@ -16,7 +16,7 @@ import torch.optim as optim
 import argparse
 from Networks.Network_correct import *
 import os
-from evaluator import *
+from loss.evaluator import *
 
 def get_args():
     parser = argparse.ArgumentParser(description="Script to launch jigsaw training", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
