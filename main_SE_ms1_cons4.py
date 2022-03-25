@@ -11,17 +11,17 @@ import torch
 import torch.utils.data as data
 import torch.nn as nn
 
-from Sampler import *
+from Networks.Sampler import *
 
-from Segmentor import SegMenTor
-from Network import *
+from Networks.Segmentor import SegMenTor
+from Networks.Network import *
 
 import torch.optim as optim
 
 from nn_common_modules import losses as additional_losses
 
 import os
-from evaluator import *
+from loss.evaluator import *
 
 os.system('nvidia-smi -q -d Memory |grep -A4 GPU|grep Free >tmp')
 memory_gpu=[int(x.split()[2]) for x in open('tmp','r').readlines()]
