@@ -12,7 +12,7 @@ python main_ours.py
 python test.py
 
 ## Quantitative results measured in DC scores
-|  Modality        |  MRI                                             
+|  Modality        |  MRI   |         |        |         |      |          
 |  --------------  |  ----  |  ------ | ------ |  ------ | ---- |
 |  Organ           |  Liver |  Spleen | Left   |  Right  | mean | 
 |                  |        |         | Kidney |  Kidney |      |
