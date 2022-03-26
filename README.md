@@ -11,7 +11,8 @@ python main_ours.py
 ## Test
 python test.py
 
-## Quantitative results on MRI measured in DC scores 
+## Results
+### Quantitative results on MRI measured in DC scores 
 |  Organ           |  Liver |  Spleen | Left Kidney  |  Right Kidney | mean  | 
 |  --------------  |  ----  |  ------ | -----------  |  ------------ | ----  |
 |  OSLSM           |  25.73 |  34.66  | 29.21        |  22.61        | 28.00 |
@@ -22,7 +23,7 @@ python test.py
 |  GCN             |  51.33 |  58.67  | 63.67        |  70.33        | 61.00 |
 |  GCN-DE(Ours)    |  49.47 |**60.63**| **76.07**    |  **83.03**    | **67.30**|
 
-## Quantitative results on CT measured in DC scores 
+### Quantitative results on CT measured in DC scores 
 |  Organ           |  Liver |  Spleen | Left Kidney  |  Right Kidney | mean  | 
 |  --------------  |  ----  |  ------ | -----------  |  ------------ | ----  |
 |  OSLSM           |  29.65 |  19.40  | 15.82        |  7.54         | 18.08 |
@@ -32,3 +33,5 @@ python test.py
 |  SE-FSS          |  44.51 |  40.52  | 40.10        |  34.80        | 39.97 |
 |  GCN             |  47.00 |  46.67  | 42.33        |  35.00        | 42.75 |
 |  GCN-DE(Ours)    |  46.77 |**56.53**| **68.13**    |  **75.50**    | **61.73**|
+
+See more details in the paper
