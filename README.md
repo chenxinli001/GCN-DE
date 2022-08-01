@@ -10,7 +10,7 @@ A Pytorch Implementation of ''Few-shot medical image segmentation using a global
 - CUDA 8.0
 
 ## Train&Test
-Code is being organized and will be released soon. 
+Training and testing code is being organized and will be released soon. 
 
 
 ## Results
@@ -50,4 +50,3 @@ If you find this repository useful, please cite our paper:
   publisher={Elsevier}
 }
 ```
-
