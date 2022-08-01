@@ -1,9 +1,13 @@
-# FSL-using-GCN-DE
+# Hierarchical Deep Network with Uncertainty aware Semi-supervised Learning for Vesse Segmentation (CBM 2021) ([Link](https://www.sciencedirect.com/science/article/pii/S0010482521008611))
+
+A Pytorch Implementation of ''Hierarchical Deep Network with Uncertainty aware Semi-supervised Learning for Vesse Segmentation'', which is accepted by the jounal of Computers in Biology and Medicine.
+
 ## Requirements
 
-* Python == 
-* Pytorch == 
-* Torchvision ==
+- Python == 3.7.4
+- Pytorch == 1.1.0
+- Torchvision == 0.3.0
+- CUDA 8.0
 
 ## Train
 python main_ours.py
@@ -34,4 +38,18 @@ python test.py
 |  GCN             |  47.00 |  46.67  | 42.33        |  35.00        | 42.75 |
 |  GCN-DE(Ours)    |  46.77 |**56.53**| **68.13**    |  **75.50**    | **61.73**|
 
-See more details in the paper
+## Citation
+
+If you find this repository useful, please cite our paper:
+```
+@article{sun2022few,
+  title={Few-shot medical image segmentation using a global correlation network with discriminative embedding},
+  author={Sun, Liyan and Li, Chenxin and Ding, Xinghao and Huang, Yue and Chen, Zhong and Wang, Guisheng and Yu, Yizhou and Paisley, John},
+  journal={Computers in biology and medicine},
+  volume={140},
+  pages={105067},
+  year={2022},
+  publisher={Elsevier}
+}
+```
+
