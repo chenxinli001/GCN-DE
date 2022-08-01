@@ -1,6 +1,6 @@
-# Hierarchical Deep Network with Uncertainty aware Semi-supervised Learning for Vesse Segmentation (CBM 2021) ([Link](https://www.sciencedirect.com/science/article/pii/S0010482521008611))
+# Few-shot medical image segmentation using a global correlation network with discriminative embedding (CBM 2021) ([Link](https://www.sciencedirect.com/science/article/pii/S0010482521008611))
 
-A Pytorch Implementation of ''Hierarchical Deep Network with Uncertainty aware Semi-supervised Learning for Vesse Segmentation'', which is accepted by the jounal of Computers in Biology and Medicine.
+A Pytorch Implementation of ''Few-shot medical image segmentation using a global correlation network with discriminative embedding'', which is accepted by the jounal of Computers in Biology and Medicine.
 
 ## Requirements
 
@@ -9,11 +9,9 @@ A Pytorch Implementation of ''Hierarchical Deep Network with Uncertainty aware S
 - Torchvision == 0.3.0
 - CUDA 8.0
 
-## Train
-python main_ours.py
+## Train&Test
+Code is being organized and will be released soon. 
 
-## Test
-python test.py
 
 ## Results
 ### Quantitative results on MRI measured in DC scores 
